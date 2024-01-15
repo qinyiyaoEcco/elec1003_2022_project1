@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="form-group vspace">
+      <input name="player" class="input-lg" required="required"
+             placeholder="Your name">
+         <p style="display: none; color: red; font-size: 16px;">Username cannot be empty</p>
+     <div class="mode-container">
+         <button value="easy" class="btn btn-primary btn-lg" onclick="sendMode(0)">Easy!</button>
+         <button value="medium" class="btn btn-primary btn-lg" onclick="sendMode(1)">Medium!</button>
+         <button value="hard" class="btn btn-primary btn-lg" onclick="sendMode(2)">Hard!</button>
+     </div>
+
+    </div>
+
+  <div class="panel panel-default vspace">
+    <div class="panel-heading">Top 10</div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Player</th>
+          <th>Word</th>
+          <th>Errors</th>
+          <th>Points</th>
+          <th>Time</th>
+      <tbody>
+        {% for game in games %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ game.player }}</td>
+            <td class="text-success">{{ game.current }}</td>
+            <td class="text-danger spaced">{{ game.errors }}</td>
+            <td>{{ game.points }}</td>
+            <td>{{ game.time }}</td>
+        {% endfor %}
+    </table>
+  </div>
+
+
+  <script>
+
+    // Game mode or Difficulty
+     function sendMode(mode) {
+         let username = document.querySelector('.form-group > input').value;
+
+         // if username is not empty
+         if (username.trim(" ") == "") {
+             document.querySelector('.form-group > p').style.display = 'block';
+         } else {
+
+            // get request for creating a new game
+            let uri = "{{ url_for('new_game') }}"+"?player="+username+"&mode="+mode
+            fetch(uri)
+            .then((res) => {
+                location.href = res.url; // direct to that returned url
+            })
+            .catch(err => {
+                console.log("Request failed", err);
+            })
+         }
+
+     }
+    localStorage.clear();
+  </script>
+{% endblock %}

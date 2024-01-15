@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Hangman game</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='main.css') }}">
+
+  </head>
+  <body>
+    {% if game %}
+      <!-- modal box -->
+      <div id="pre-game-modal">
+        <div class="modal-box">
+          <div class="game-settings">
+            <p>Game Settings</p>
+            <ul>
+              <li>
+                <!-- a music switch indicating on or off -->
+                <p> Music </p>
+                <div class="setting-controls">
+                  <label class="switch">
+                    <input type="checkbox" onclick="musicBtn()">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </li>
+              <li>
+                <!-- same as above -->
+                <p> Timer </p>
+                <div class="setting-controls">
+                  <label class="switch">
+                    <input type="checkbox" onclick="timerBtn()">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </li>
+              <li>
+                <!-- same as above -->
+                <p> Dark Mode </p>
+                <div class="setting-controls">
+                  <label class="switch" >
+                    <input type="checkbox" onclick="darkMode()">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+          <div class="players">
+            <p>Players</p>
+            <div class="ready-btn">
+              <!-- start guessing -->
+              <button onclick="playerReady()">Ready</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="nav-bar">
+        <!-- timer on the top left of the nav bar -->
+        <div class="stop-watch">
+          00:00:00
+        </div>
+      </div>
+
+    {% endif %}
+
+    <div class="container text-center">
+      <h1>Hangman game</h1>
+      {% if not game %}
+        <div class="instruction" onclick="showInstructions()">
+            <p>?</p>
+        </div>
+        <p style="display:none;font-size: 16px; margin-left: 150px; margin-right:150px;">Enter your name, click on one of the 3 modes to start playing!
+              Each of the modes determines the length of the word you will be guessing, Easy, Medium and Hard will be
+              length 1-5, 6-10, 11-20 (inclusively) respectively. Good Luck!</p>
+      {% endif %}
+      <div class="row vspace">
+        <div class="col-md-6 col-md-offset-3">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+    {% if game %}
+      <!-- characters from A-Z -->
+      <div id="letter-space">
+        <!-- loop over the dictionary passed on the backend -->
+        <!-- and display the letters such as the background color based on the backend logic -->
+        {% for k, v in letters.items() %}
+          {% if v[1] == -1 %}
+            <div class="letter-box" onclick="choseLetter('{{ k }}', '{{ v[0] }}')" style="background-color:lightgreen">
+              <p>{{ k }}</p>
+            </div>
+          {% elif v[1] == 1 %}
+            <div class="letter-box" onclick="choseLetter('{{ k }}', '{{ v[0] }}')" style="background-color:#ffcccb">
+              <p>{{ k }}</p>
+            </div>
+          {% else %}
+            <div class="letter-box" onclick="choseLetter('{{ k }}', '{{ v[0] }}')">
+              <p>{{ k }}</p>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+
+    <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+    <script>
+
+        // home page instructions explaining the game modes
+        function showInstructions() {
+            document.querySelector('.container > p').style.display="block";
+        }
+    </script>
+    {% block bottom %}{% endblock %}
+  </body>
+</html>

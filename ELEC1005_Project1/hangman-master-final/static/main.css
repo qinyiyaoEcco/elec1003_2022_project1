@@ -1,0 +1,404 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  background-color: #e0d7d475;
+}
+
+th {
+  text-align: center
+}
+
+.vspace {
+  margin-top: 10px;
+}
+
+.spaced {
+  letter-spacing: 15px;
+}
+
+.mode-container {
+    margin-top: 10px;
+}
+
+.panel {
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.instruction {
+    /* padding: 10px; */
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    font-size: 20px;
+    border: 1px solid #2e6da4;
+    background: #337AB7;
+    border-radius: 7px;
+}
+
+.instruction > p {
+    margin-top: 8px;
+    color: white;
+}
+
+
+/* Drawing */
+#drawing {
+  fill: none;
+  stroke: black;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1.5em;
+  stroke-dashoffset: 1000;
+}
+
+#drawing > line {
+  animation: draw-animation 4s forwards;
+
+}
+
+@keyframes draw-animation {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+#hangman-drawing > * {
+  display: none
+}
+
+
+.hangman-container {
+  /* background: red !important; */
+  position: relative;
+  width: 100% !important;
+  height: 300px !important;
+  /* margin: 0 auto !important; */
+  display: flex;
+  justify-content: center;
+}
+
+/* SVG container */
+
+.svg-container {
+  width: 70%;
+  height: 100%;
+  position: absolute;
+  /* background: blue; */
+
+}
+
+
+
+/* Hangman Image */
+.hangman-drawing {
+  /* background: blue; */
+  position: absolute;
+  top: 0;
+  right: -130px;
+  /* background: green; */
+  height: 100%;
+  width: 100%;
+}
+
+.hangman-drawing > img {
+  position: relative;
+  visibility: hidden;
+}
+
+.hangman-drawing > img:nth-child(1) {
+  top: 20px;
+  left: 30px;
+  width: 50px;
+  height: 50px;
+  /* visibility: visible; */
+
+}
+.hangman-drawing > img:nth-child(2) {
+  top: 72px;
+  right: 25px;
+  width: 50px;
+  height: 55px;
+}
+.hangman-drawing > img:nth-child(3) {
+  top: 72px;
+  right: 100px;
+  width: 25px;
+  height: 60px;
+}
+.hangman-drawing > img:nth-child(4) {
+  top: 72px;
+  right: 60px;
+  width: 25px;
+  height: 60px;
+}
+.hangman-drawing > img:nth-child(5) {
+  width: 50px;
+  height: 70px;
+  top: 132px;
+  right: 136px;
+
+}
+.hangman-drawing > img:nth-child(6) {
+  width: 50px;
+  height: 20px;
+  top: 177px;
+  right: 190px;
+}
+
+
+
+/* Game Screen */
+
+#pre-game-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.6);
+
+  /* display: none; */
+}
+
+.modal-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  width: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 5px 5px rgba(255, 255, 255, 0.3);
+              /* -5px -5px 5px rgba(63, 63, 63, 0.3); */
+  border-radius: 20px;
+  min-width: 350px;
+}
+
+.game-settings {
+  flex: 0.6;
+  height: 100%;
+}
+
+.game-settings > p {
+  font-size: 1.8em;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  color:rgba(90, 62, 45, 0.99);
+}
+
+.players {
+  flex: 0.4;
+  height: 100%;
+  background-color: rgba(228, 228, 228, 0.5);
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 3px 3px 5px rgba(63, 63, 63, 0.3),
+              -3px -3px 5px rgba(63, 63, 63, 0.3);
+
+}
+
+.players > p {
+  font-size: 1.8em;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  color:rgba(90, 62, 45, 0.99);
+}
+
+li {
+  list-style: none;
+  background: rgba(244, 244, 244, 0.6);
+  /* box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4); */
+  line-height: 2em;
+  margin-bottom: 1em;
+  display: flex;
+  padding: 5px;
+}
+
+li > p {
+  flex: 0.2;
+}
+
+.setting-controls {
+  width: 50%;
+  flex: 0.8;
+  margin-left: 2em;
+}
+
+.setting-controls > button {
+  margin-right: 0.5em;
+  outline: none;
+  border: none;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 70px;
+  /* box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); */
+  box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.3),
+              0px -0px 5px rgba(0, 0, 0, 0.3);
+}
+
+
+.save-btn {
+  width: 100%;
+  text-align: center;
+}
+
+.save-btn > button {
+  padding: 3px;
+}
+
+.ready-btn {
+  text-align: center;
+}
+
+.ready-btn > button {
+  padding: 3px;
+}
+
+
+/* toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 55px;
+  height: 33px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(109, 109, 109, 0.8);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #a217de;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Nav Bar */
+#nav-bar {
+  background: rgba(47, 47, 47, 0.9);
+  box-shadow: 1px 2px 3px rgba(184, 184, 184, 0.9);
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.fa-gear {
+  font-size: 28px;
+  color: white;
+  padding-left: 15px;
+  cursor: pointer;
+}
+
+.stop-watch {
+  font-size: 20px;
+  padding-left: 15px;
+  color: white;
+}
+
+#letter-space {
+  display: flex;
+  flex-wrap: wrap;
+  width: 40%;
+  margin: 50px auto;
+}
+
+.letter-box {
+  /* background: rgba(223, 223, 223, 0.9); */
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.letter-box:hover {
+  background: rgba(242, 242, 242, 0.8);
+  animation: letter-move 1s forwards;
+}
+
+@keyframes letter-move {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(5px) scale(1.2);
+  }
+}
+
+.letter-box > p {
+  top: 50%;
+  margin-top: 15px;
+}
+
+@media only screen and (max-width: 1200px) {
+  #letter-space {
+    width: 85%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  #letter-space {
+    width: 100%;
+    margin-left: 10px;
+  }
+}

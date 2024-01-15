@@ -1,0 +1,249 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+
+  <audio id="hangman-bg-music">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+  </audio>
+
+
+  <div class="hangman-container">
+    <div class="svg-container">
+      <svg width="250" height="230" id="drawing">
+        <!-- Structure -->
+        <line y1="220" y2="220" x1="10" x2="120" />
+        <line y1="10" y2="220" x1="65" x2="65" />
+        <line y1="10" y2="10" x1="65" x2="175" />
+        <line y1="10" y2="40" x1="175" x2="175" />
+
+      </svg>
+      <div class="hangman-drawing">
+        <!-- display 6 parts of the character -->
+        <img src="/static/head.png" alt="head">
+        <img src="/static/torso.png" alt="torso">
+        <img src="/static/left_hand.png" alt="left_hand">
+        <img src="/static/right_hand.png" alt="right_hand">
+        <img src="/static/legs.png" alt="legs">
+        <img src="/static/foot.png" alt="foot">
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+  {% if game.finished %}
+    <p id="game-end" style="display:none">1</p>
+    <h1>
+      {% for letter in game.word %}
+        <span class="
+          text-{% if letter in game.tried %}success{% else %}danger{% endif %}">
+          {{ letter }}
+        </span>
+      {% endfor %}
+    </h1>
+    <h3>
+      {% if game.won %} You won! {% else %} You lost :-( {% endif %}
+    </h3>
+    <p>
+      <a class="btn btn-default" href="{{ url_for('home') }}">Home</a>
+    </p>
+
+  {% else %}
+    <h1 id="current" class="spaced">{{ game.current }}</h1>
+  {% endif %}
+
+  <h2 class="vspace" id="errors">
+    Errors ({{ game.errors|length }}/6):
+    <span class="text-danger spaced">{{ game.errors }}</span>
+  </h2>
+
+  {% if not game.finished %}
+    <p id="game-end" style="display:none">0</p>
+  {% endif %}
+{% endblock %}
+
+{% block bottom %}
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script>
+
+    let end = document.getElementById('game-end');
+    let stopwatch = document.querySelector(".stop-watch");
+
+    localStorage.clear();
+
+    if (end.innerHTML == '1') {
+
+      // if game ended, show all the strokes again
+      document.getElementById('pre-game-modal').style.display = 'none';
+      document.querySelectorAll('#hangman-drawing > *').forEach((stroke) => {
+        stroke.style.display = 'block';
+      });
+
+    } else {
+
+      // processing
+      let audio = document.getElementById("hangman-bg-music");
+      let input_box = document.querySelector(".form-group input");
+      audio.volume = 0.3;
+
+      updateDrawing('{{ game.errors }}');
+
+      let pre_game_modal = document.getElementById("pre-game-modal");
+
+      // increment timer function executed once per every second
+      function incrementTimer() {
+        let time = stopwatch.innerHTML;
+
+        if (localStorage.getItem("game_timer")) {
+          time = localStorage.getItem("game_timer");
+        }
+        let [hours, minutes, seconds] = time.split(":");
+        console.log(hours, minutes, seconds);
+        let h = parseInt(hours);
+        let m = parseInt(minutes);
+        let s = parseInt(seconds);
+
+        let added = false;
+        if (s == 59) {
+          s = 0;
+          m += 1;
+          if (m == 59) {
+            m = 0;
+            h += 1;
+          }
+        } else {
+          s += 1;
+        }
+
+        // add padding 0 to hours minutes and seconds if they are less than 10
+        if (h < 10) {
+          h = "0" + h;
+        }
+        if (m < 10) {
+          m = "0" + m;
+        }
+        if (s < 10) {
+          s = "0" + s;
+        }
+
+        let new_time = `${h}:${m}:${s}`;
+        stopwatch.innerHTML = new_time;
+
+        // save time in local storage
+        localStorage.setItem('game_timer', new_time);
+      }
+
+
+      // the following code is related to game settings
+      // where the game settings are all saved in the local storage
+      modeBtn = document.querySelectorAll('.setting-controls > button');
+
+
+      // the resetBoxShadow, and the 3 modes function is related to adding boxshadow to indicate 
+      // which button is being pressed.
+      function resetBoxShadow(element) {
+        element.style.boxShadow = "3px 5px 5px rgba(0, 0, 0, 0.3)"
+      }
+
+      function easyMode() {
+        modeBtn[0].style.boxShadow = 'none';
+        resetBoxShadow(modeBtn[1]);
+        resetBoxShadow(modeBtn[2]);
+        localStorage.setItem('mode', 'easy');
+
+      }
+      function mediumMode() {
+        modeBtn[1].style.boxShadow = 'none';
+        resetBoxShadow(modeBtn[0]);
+        resetBoxShadow(modeBtn[2]);
+        localStorage.setItem('mode', 'medium');
+      }
+      function hardMode() {
+        modeBtn[2].style.boxShadow = 'none';
+        resetBoxShadow(modeBtn[0]);
+        resetBoxShadow(modeBtn[1]);
+        localStorage.setItem('mode', 'hard');
+      }
+
+
+
+      function darkMode() {
+        // if localStorage doesn't have key dark-mode, set it to 1
+        if (!localStorage.getItem('dark-mode')) {
+          localStorage.setItem('dark-mode', 1);
+        } else {
+          // set the value to its previous value + 1
+          localStorage.setItem('dark-mode', parseInt(localStorage.getItem('dark-mode')) + 1);
+        }
+      }
+
+      function timerBtn() {
+        // same logic as darkMode function above
+        if (!localStorage.getItem('timer')) {
+          localStorage.setItem('timer', 1);
+        } else {
+          localStorage.setItem('timer', parseInt(localStorage.getItem('timer')) + 1);
+        }
+      }
+
+      function musicBtn() {
+        // same logic as darkMode function above
+        if (!localStorage.getItem('music')) {
+          localStorage.setItem('music', 1);
+        } else {
+          localStorage.setItem('music', parseInt(localStorage.getItem('music')) + 1);
+        }
+      }
+
+      // when user clicked on ready btn
+      function playerReady() {
+        music = -1;
+        isDarkMode = -1;
+        timer = -1;
+
+        // the modulo function allow us to know where to turn on or off the settings
+        // if it is even, then it is off, else it is activated
+        if (localStorage.getItem('music')) {
+          music = parseInt(localStorage.getItem('music')) % 2;
+        }
+        if (localStorage.getItem('dark-mode')) {
+          isDarkMode = parseInt(localStorage.getItem('dark-mode')) % 2;
+        }
+        if (localStorage.getItem('timer')) {
+          timer = parseInt(localStorage.getItem('timer')) % 2;
+        }
+
+        // if value is 0, then it is off
+        if (music == 0 || music == -1) {
+          audio.volume = 0;
+        }
+        if (timer == 0 || timer == -1) {
+          document.querySelector('.stop-watch').style.display = 'none';
+        } else {
+          setInterval(incrementTimer, 1000);  // increment timer every 1 second
+        }
+        if (isDarkMode != 0 && isDarkMode != -1) {
+          document.getElementsByTagName('body')[0].style.backgroundColor = '#000000';
+          document.getElementById('drawing').style.stroke = 'white';
+          document.querySelectorAll('.letter-box').forEach((letter) => {
+            letter.style.backgroundColor = '#ffffff';
+          });
+          document.querySelectorAll('h1').forEach((letter) => {
+            letter.style.color = '#ffffff';
+          });
+
+          document.querySelectorAll('h2').forEach((letter) => {
+            letter.style.color = '#ffffff';
+          });
+        }
+        audio.play();
+        pre_game_modal.style.display = "none";
+
+      }
+    }
+
+    </script>
+{% endblock %}
